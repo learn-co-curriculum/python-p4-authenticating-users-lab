@@ -20,7 +20,19 @@ with app.app_context():
     fake = Faker()
 
     print("Creating users...")
-    users = [User(name=fake.name()) for i in range(25)]
+    users = []
+    usernames = []
+    for i in range(25):
+
+        username = fake.first_name()
+        while username in usernames:
+            username = fake.first_name()
+        
+        usernames.append(username)
+
+        user = User(username=username)
+        users.append(user)
+
     db.session.add_all(users)
 
     print("Creating articles...")

@@ -40,7 +40,7 @@ $ python seed.py
 
 You can work on this lab by running the tests with `pytest -x`. It will also be
 helpful to see what's happening during the request/response cycle by running the
-app in the browser. You can run the Rails server with:
+app in the browser. You can run the Flask server with:
 
 ```console
 $ python app.py
@@ -64,51 +64,40 @@ For our basic login feature, we'll need the following functionality:
 - A user can log out.
 - A user can remain logged in, even after refreshing the page.
 
-We'll need to create the routes and controller methods to handle each of these
-features. Let's get started!
+We'll need to create the resources to handle each of these features. Let's get
+started!
+
+> ***NOTE: This lab uses the Flask-Restful module rather than vanilla Flask.
+> You do not need to use it to pass the tests, but we recommend giving it a
+> shot.***
 
 ### Sessions
 
-- Generate these routes:
+- Generate these resources:
 
-  - `POST /login`: run the `SessionsController#create` method.
-  - `DELETE /logout`: run the `SessionsController#destroy` method.
+- `Login` is located at `/login`.
+    - It has one route, `post()`.
+    - `post()` gets a `username` from `request`'s JSON.
+    - `post()` retrieves the user by `username` (we made these unique for you).
+    - `post()` sets the session's `user_id` value to the user's `id`.
+    - `post()` returns the user as JSON with a 200 status code.
 
-- Create a sessions controller.
+- `Logout` is located at `/logout`.
+    - It has one route, `delete()`.
+    - `delete()` removes the `user_id` value from the session.
+    - `delete()` returns no data and a 204 (No Content) status code.
 
-  - **Note:** If you use the generators to generate your controllers, be sure to
-    pass the `--no-test-framework` flag to avoid generating unneeded files:
-    `rails g controller Sessions --no-test-framework`.
-
-- Make a `SessionsController#create` method. It should:
-
-  - Find a user in the database using the username from `params`.
-  - Save the user's ID to the session hash.
-  - Return the user as a JSON object.
-
-- Make a `SessionsController#destroy` method. It should:
-
-  - Remove the user ID from the session hash.
-  - Return an empty response with a 204 No Content status code.
-
-### Users
-
-- Generate these routes:
-
-  - `GET /me`: run the `UsersController#show` method.
-
-- Create a users controller.
-
-  - **Note:** If you use the generators to generate your controllers, be sure to
-    pass the `--no-test-framework` flag to avoid generating unneeded files:
-    `rails g controller Users --no-test-framework`.
-
-- Make a `UsersController#show` method. It should:
-  - Find a user in the database using the user id from the session hash.
-  - Return the user as a JSON object.
+- `CheckSession` is located at `/check_session`.
+    - It has one route, `get()`.
+    - `get()` retrieves the `user_id` value from the session.
+    - If the session has a `user_id`, `get()` returns the user as JSON with
+    a 200 status code.
+    - If the session does not have a `user_id`, `get()` returns no data
+    and a 401 (Unauthorized) status code.
 
 ***
 
 ## Resources
 
+- [What is Authentication? - auth0](https://auth0.com/intro-to-iam/what-is-authentication)
 - [API - Flask: class flask.session](https://flask.palletsprojects.com/en/2.2.x/api/#flask.session)

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-from flask import Flask, make_response, jsonify, session
+from flask import Flask, make_response, jsonify, request, session
 from flask_migrate import Migrate
+from flask_restful import Api, Resource
 
 from models import db, Article, User
 
@@ -15,36 +16,36 @@ migrate = Migrate(app, db)
 
 db.init_app(app)
 
-@app.route('/clear')
-def clear_session():
-    session['page_views'] = 0
+api = Api(app)
 
-    return make_response(
-        jsonify({
-            'message': '200: Successfully cleared session data.'
-        }),
-        200
-    )
+class ClearSession(Resource):
 
-@app.route('/articles')
-def index_articles():
-    articles = [article.to_dict() for article in Article.query.all()]
-    return make_response(jsonify(articles), 200)
+    def delete(self):
+    
+        session['page_views'] = None
+        session['user_id'] = None
 
-@app.route('/articles/<int:id>')
-def show_article(id):
+        return {}, 204
 
-    session['page_views'] = 0 if not session.get('page_views') else session.get('page_views')
-    session['page_views'] += 1
+class IndexArticle(Resource):
+    
+    def get(self):
+        articles = [article.to_dict() for article in Article.query.all()]
+        return make_response(jsonify(articles), 200)
 
-    if session['page_views'] <= 3:
+class ShowArticle(Resource):
 
-        article = Article.query.filter(Article.id == id).first()
-        article_json = jsonify(article.to_dict())
+    def get(self, id):
+        session['page_views'] = 0 if not session.get('page_views') else session.get('page_views')
+        session['page_views'] += 1
 
-        return make_response(article_json, 200)
+        if session['page_views'] <= 3:
 
-    else:
+            article = Article.query.filter(Article.id == id).first()
+            article_json = jsonify(article.to_dict())
+
+            return make_response(article_json, 200)
+
         return make_response(
             jsonify({
                 'message': 'Maximum pageview limit reached'
@@ -52,5 +53,10 @@ def show_article(id):
             401
         )
 
+api.add_resource(ClearSession, '/clear')
+api.add_resource(IndexArticle, '/articles')
+api.add_resource(ShowArticle, '/articles/<int:id>')
+
+
 if __name__ == '__main__':
-    app.run(port=5555)
+    app.run(port=5555, debug=True)
