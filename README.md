@@ -24,8 +24,8 @@
 
 ## Introduction
 
-In this lab, we'll continue working on the blog site and set up a basic login
-feature.
+In this lab, we'll continue working on the blog site from the last lab and set
+up a basic login feature.
 
 There is some starter code in place for a Flask API backend and a React
 frontend. To get set up, run:
