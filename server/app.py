@@ -31,7 +31,7 @@ class IndexArticle(Resource):
     
     def get(self):
         articles = [article.to_dict() for article in Article.query.all()]
-        return make_response(jsonify(articles), 200)
+        return articles, 200
 
 class ShowArticle(Resource):
 
@@ -46,12 +46,7 @@ class ShowArticle(Resource):
 
             return make_response(article_json, 200)
 
-        return make_response(
-            jsonify({
-                'message': 'Maximum pageview limit reached'
-            }),
-            401
-        )
+        return {'message': 'Maximum pageview limit reached'}, 401
 
 api.add_resource(ClearSession, '/clear')
 api.add_resource(IndexArticle, '/articles')
