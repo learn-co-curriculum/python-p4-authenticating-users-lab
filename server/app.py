@@ -18,6 +18,27 @@ db.init_app(app)
 
 api = Api(app)
 
+
+class LoginResource(Resource):
+    def post(self):
+        data = request.get_json()
+        username = data.get('username')
+        user = next((user for user in users if user['username'] == username), None)
+        if user:
+            session['user_id']=user['id']
+            return user, 200
+        else:
+            return {'error': 'User not found'}, 404
+
+class LogoutResource(Resource):
+    def delete(self):
+        user_id = session.get('user_id')
+        if user_id:
+            user = next((user for user in users if user['id'] == user_id), None)
+            return user, 200
+        else:
+            return {'error': 'Not logged in'}
+
 class ClearSession(Resource):
 
     def delete(self):
@@ -51,6 +72,9 @@ class ShowArticle(Resource):
 api.add_resource(ClearSession, '/clear')
 api.add_resource(IndexArticle, '/articles')
 api.add_resource(ShowArticle, '/articles/<int:id>')
+api.add_resource(LoginResource, '/login')
+api.add_resource(LogoutResource, '/logout')
+#api.add_resource(CheckSessionResource, '/check_session')
 
 
 if __name__ == '__main__':

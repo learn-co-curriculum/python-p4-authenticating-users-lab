@@ -1,4 +1,10 @@
 # Authenticating Users Lab
+SET -UP
+ pipenv install && pipenv shell
+ npm install --prefix client
+ cd server
+ flask db upgrade
+ python seed.py
 
 ## Learning Goals
 
