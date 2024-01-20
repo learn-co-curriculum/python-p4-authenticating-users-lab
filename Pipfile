@@ -1,5 +1,5 @@
 [[source]]
-url = "https://pypi.org/simple"
+url = " http://127.0.0.1:5555"
 verify_ssl = true
 name = "pypi"
 
@@ -13,9 +13,9 @@ flask-migrate = "4.0.0"
 flask-restful = "0.3.9"
 importlib-metadata = "6.0.0"
 importlib-resources = "5.10.0"
-pytest = "7.2.0"
+pytest = "*"
 
 [dev-packages]
 
 [requires]
-python_full_version = "3.8.13"
+python_full_version = "3"
